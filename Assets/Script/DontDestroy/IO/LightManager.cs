@@ -13,9 +13,9 @@ public class LightManager : MonoBehaviour
     bool useDummy = true;
     SpriteRenderer[] DummyLights;
     SerialPort serial;
+    List<byte> templateAll = new List<byte>()    {0xE0, 0x11, 0x01, 0x08, 0x32, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    List<byte> templateSingle = new List<byte>() {0xE0, 0x11, 0x01, 0x05, 0x31, 0x01, 0x00, 0x00, 0x00 };
     List<byte> templateUpdate = new List<byte>() { 0xE0, 0x11, 0x01, 0x01, 0x3C, 0x4F };
-    List<byte> templateAll = new List<byte>() { 0xE0, 0x11, 0x01, 0x08, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-    List<byte> templateSingle = new List<byte>() { 0xE0, 0x11, 0x01, 0x05, 0x31, 0x01, 0x00, 0x00, 0x00 };
 
     public void LightToggle()
     {
@@ -62,7 +62,7 @@ public class LightManager : MonoBehaviour
     byte CalculateCheckSum(List<byte> bytes)
     {
         byte sum = 0;
-        for(int i=1;i<bytes.Count;i++)
+        for (int i = 1; i < bytes.Count; i++)
         {
             sum += bytes[i];
         }
