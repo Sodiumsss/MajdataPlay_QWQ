@@ -8,10 +8,12 @@ public class ListManager : MonoBehaviour
 {
     public CoverListDisplayer CoverListDisplayer;
     // Start is called before the first frame update
+
     void Start()
     {
         CoverListDisplayer.SetDirList(SongStorage.Songs);
         CoverListDisplayer.SetSongList();
+
         LightManager.Instance.SetAllLight(Color.white);
         LightManager.Instance.SetButtonLight(Color.green, 3);
         LightManager.Instance.SetButtonLight(Color.red, 4);
@@ -23,7 +25,7 @@ public class ListManager : MonoBehaviour
         InputManager.Instance.BindAnyArea(OnAreaDown);
     }
 
-    private void OnAreaDown(object sender, InputEventArgs e)
+    public void OnAreaDown(object sender, InputEventArgs e)
     {
         if (!e.IsClick)
             return;

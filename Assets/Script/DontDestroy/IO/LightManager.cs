@@ -13,11 +13,20 @@ public class LightManager : MonoBehaviour
     bool useDummy = true;
     SpriteRenderer[] DummyLights;
     SerialPort serial;
-    List<byte> templateAll = new List<byte>()    {0xE0, 0x11, 0x01, 0x08, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-    List<byte> templateSingle = new List<byte>() {0xE0, 0x11, 0x01, 0x05, 0x31, 0x01, 0x00, 0x00, 0x00 };
+    List<byte> templateAll = new List<byte>() { 0xE0, 0x11, 0x01, 0x08, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    List<byte> templateSingle = new List<byte>() { 0xE0, 0x11, 0x01, 0x05, 0x31, 0x01, 0x00, 0x00, 0x00 };
+
+    public void LightToggle()
+    {
+
+        foreach (var light in DummyLights)
+        {
+            light.enabled = !light.enabled;
+        }
+    }
     private void Awake()
     {
-        Instance = this; 
+        Instance = this;
         DontDestroyOnLoad(gameObject);
         DummyLights = gameObject.GetComponentsInChildren<SpriteRenderer>();
         try
@@ -52,7 +61,7 @@ public class LightManager : MonoBehaviour
     byte CalculateCheckSum(List<byte> bytes)
     {
         byte sum = 0;
-        for(int i=1;i<bytes.Count;i++)
+        for (int i = 1; i < bytes.Count; i++)
         {
             sum += bytes[i];
         }
@@ -68,7 +77,7 @@ public class LightManager : MonoBehaviour
         bytes.Add(CalculateCheckSum(bytes));
         Task.Run(() => { serial.Write(bytes.ToArray(), 0, bytes.Count); });
     }
-    void SetButtonLightSerial(Color color,int button)
+    void SetButtonLightSerial(Color color, int button)
     {
         var bytes = templateSingle.Clone();
         bytes[5] = (byte)(button);
@@ -81,9 +90,9 @@ public class LightManager : MonoBehaviour
 
     public void SetAllLight(Color lightColor)
     {
-        if(useDummy)
+        if (useDummy)
         {
-            foreach(var light in DummyLights)
+            foreach (var light in DummyLights)
             {
                 light.color = lightColor;
             }
@@ -94,7 +103,7 @@ public class LightManager : MonoBehaviour
         }
     }
 
-    public void SetButtonLight(Color lightColor,int button)
+    public void SetButtonLight(Color lightColor, int button)
     {
         if (useDummy)
         {
@@ -102,7 +111,7 @@ public class LightManager : MonoBehaviour
         }
         else
         {
-            SetButtonLightSerial(lightColor,button);
+            SetButtonLightSerial(lightColor, button);
         }
     }
 
@@ -110,9 +119,9 @@ public class LightManager : MonoBehaviour
     {
         while (true)
         {
-            SetButtonLight(Color.red,1);
+            SetButtonLight(Color.red, 1);
             yield return new WaitForSeconds(0.3f);
-            SetButtonLight(Color.green,1);
+            SetButtonLight(Color.green, 1);
             yield return new WaitForSeconds(0.3f);
             //SetAllLight(Color.blue);
             //yield return new WaitForSeconds(1);
@@ -151,6 +160,6 @@ public class LightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

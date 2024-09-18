@@ -39,8 +39,14 @@ namespace MajdataPlay.IO
             new Button(RawKey.Numpad7,SensorType.Service),
             new Button(RawKey.Numpad3,SensorType.P2),
         };
+
+        public bool disable = false;
         void UpdateButtonState()
         {
+            if (disable)
+            {
+                return;
+            }
             if (!buttonCheckerMutex.WaitOne(4))
                 return;
             foreach (var keyId in bindingKeys)
@@ -85,6 +91,10 @@ namespace MajdataPlay.IO
         }
         void OnRawKeyUp(RawKey key)
         {
+            if (disable)
+            {
+                return;
+            }
             if (!buttonCheckerMutex.WaitOne(4))
                 return;
             if (bindingKeys.All(x => x != key))
@@ -114,6 +124,10 @@ namespace MajdataPlay.IO
         }
         void OnRawKeyDown(RawKey key)
         {
+            if (disable)
+            {
+                return;
+            }
             if (!buttonCheckerMutex.WaitOne(4))
                 return;
             if (bindingKeys.All(x => x != key))

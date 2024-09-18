@@ -169,10 +169,10 @@ public class CoverListDisplayer : MonoBehaviour
             }
         }
         if (isDirList && Time.frameCount%50==0) {
-            if (coveri >= songs.Count) coveri = 0;
+                if (coveri >= songs.Count) coveri = 0;
             CoverBigDisplayer.SetCover(songs.ToArray()[coveri++].SongCover);
-        }
-    }
+                }
+            }
     private int coveri = 0;
 
     Vector3 GetCoverPosition(float radius, float position)

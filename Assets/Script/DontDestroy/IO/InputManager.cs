@@ -22,6 +22,10 @@ namespace MajdataPlay.IO
         Mutex buttonCheckerMutex = new();
         CancellationTokenSource cancelSource = new();
 
+        public void ClearTrigger()
+        {
+            OnAnyAreaTrigger = null;
+        }
         void Awake()
         {
             Instance = this;
