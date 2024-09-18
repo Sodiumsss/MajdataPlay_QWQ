@@ -111,7 +111,6 @@ public class Canvas : MonoBehaviour
         Password = password.GetComponent<TMP_InputField>();
         Transform loadingTextTrans = loadingPage.transform.Find("LoadingText");
         LoadingText = loadingTextTrans.GetComponent<TextMeshProUGUI>();
-        Debug.Log(LoadingText);
         Username.text = PlayerPrefs.HasKey("Username") ? PlayerPrefs.GetString("Username") : "";
         Password.text = PlayerPrefs.HasKey("Password") ? PlayerPrefs.GetString("Password") : "";
     }
@@ -173,8 +172,7 @@ public class Canvas : MonoBehaviour
             var url = pre + ip + r.message;
             loadingPage.SetActive(true);
             homePage.SetActive(false);
-            Debug.Log(url);
-            SetLoadingText("正在解压中……");
+            SetLoadingText("正在下载中……");
             StartCoroutine(DownloadAndExtractZip(url, Guid.NewGuid().ToString()));
         }
     }
@@ -228,7 +226,7 @@ public class Canvas : MonoBehaviour
         if (r != null && r.message != null && r.IsSuccess())
         {
             var url = pre + ip  + r.message;
-            SetLoadingText("正在解压中……");
+            SetLoadingText("正在下载中……");
             StartCoroutine(DownloadAndExtractZip(url, Guid.NewGuid().ToString()));
         }
     }
@@ -245,7 +243,6 @@ public class Canvas : MonoBehaviour
 
         // 保存 ZIP 文件的完整路径
         string zipFilePath = Path.Combine(gameRootPath, zipFileName);
-        Debug.Log(zipFilePath);
 
         // 下载 ZIP 文件
         using UnityWebRequest request = UnityWebRequest.Get(url);
@@ -254,7 +251,6 @@ public class Canvas : MonoBehaviour
         // 发送请求并等待响应
         yield return request.SendWebRequest();
 
-        Debug.Log("downloadurl:" + url);
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
@@ -264,6 +260,8 @@ public class Canvas : MonoBehaviour
         else
         {
             // 将 ZIP 文件保存到指定位置
+            SetLoadingText("正在解压中……");
+
             File.WriteAllBytes(zipFilePath + ".zip", request.downloadHandler.data);
 
             string folderName = Path.GetFileNameWithoutExtension(zipFileName);
@@ -325,7 +323,6 @@ public class Canvas : MonoBehaviour
             }
 
             File.Delete(zipFilePath + ".zip");
-            Debug.Log("ZIP file extracted to: " + extractPath);
             SetLoadingText("解压成功。");
         }
         loadingButton.SetActive(true);
@@ -334,7 +331,6 @@ public class Canvas : MonoBehaviour
     {
         if (LoadingText != null)
         {
-            Debug.Log("set");
             LoadingText.text = text;
         }
     }
@@ -357,10 +353,6 @@ public class Canvas : MonoBehaviour
             {
 
                 DataItem item = obj.ToObject<DataItem>();
-                Debug.Log($"ID: {item.id}");
-                Debug.Log($"Name: {item.name}");
-                Debug.Log($"Photo URL: {item.photo}");
-                Debug.Log($"Level: {item.maiDataLevels}");
                 // 解析 JSON 为 JArray
                 var result = ParseJsonString(item.maiDataLevels);
 
@@ -501,7 +493,6 @@ public class Canvas : MonoBehaviour
         {
             if (r.IsSuccess())
             {
-                Debug.Log("登录成功: " + r.message);
                 PlayerPrefs.SetString("QWQToken", r.message);
                 loginPage.SetActive(false);
                 homePage.SetActive(true);
@@ -594,7 +585,6 @@ public class Canvas : MonoBehaviour
 
         // 构建 URL，使用 queryParams 传递查询参数
         string url = queryParams != null && queryParams != "" ? $"{pre}{ip}/api/{kind}/{method}?{queryParams}" : $"{pre}{ip}/api/{kind}/{method}";
-        Debug.Log(url);
         // 创建 UnityWebRequest 并设置请求头
         UnityWebRequest request = new(url, "GET")
         {
@@ -619,7 +609,6 @@ public class Canvas : MonoBehaviour
                     SetLoadingText(result.message);
                     loadingButton.SetActive(true);
                 }
-                Debug.Log(result.GetString());
                 callback?.Invoke(result);
             }
         }
@@ -657,7 +646,6 @@ public class Canvas : MonoBehaviour
 
         // 构建 URL
         string url = $"{pre}{ip}/api/{kind}/{method}";
-        Debug.Log(url);
         // 创建 UnityWebRequest 并设置请求头
         UnityWebRequest request = new(url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
